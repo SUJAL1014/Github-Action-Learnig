@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    path:
+    paths:
       - '.github/workflows/context.yaml'
 jobs:
   prod-check:
