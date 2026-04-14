@@ -19,7 +19,7 @@ jobs:
 
       - name: Using env block
         env:
-          USER_NAME: $MY_NAME
+          USER_NAME: ${{ env.MY_NAME }}
         run: |
           echo "Mapped name is $USER_NAME"
 
