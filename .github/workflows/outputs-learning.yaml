@@ -1,0 +1,38 @@
+name: Pass Data Between Jobs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  producer:
+    runs-on: ubuntu-latest
+
+    # 👇 Job-level output (IMPORTANT)
+    # outputs:
+    #   username: ${{ steps.set-data.outputs.name }}
+
+    steps:
+      - name: Generate data
+        id: set-data
+        run: |
+          name="Sujal"
+
+          # Step output
+          echo "name=$name" >> $GITHUB_OUTPUT
+
+          # Env variable (only inside this job)
+          echo "NAME=$name" >> $GITHUB_ENV
+
+      - name: Verify inside producer
+        run: |
+          echo "From ENV: $NAME"
+          echo "From Step Output: ${{ steps.set-data.outputs.name }}"
+
+  # consumer:
+  #   runs-on: ubuntu-latest
+  #   needs: producer
+
+  #   steps:
+  #     - name: Use data from producer
+  #       run: |
+  #         echo "Received from producer: ${{ needs.producer.outputs.username }}"
