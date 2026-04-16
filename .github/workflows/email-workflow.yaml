@@ -1,0 +1,42 @@
+name: Demo Workflow with Email Notification
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  build-and-notify:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+
+      - name: Run Build
+        run: |
+          echo "Building project..."
+          sleep 5
+          echo "Build completed successfully!"
+
+
+      - name: Send Email on Success
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: sujalpatel1014@gmail.com
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "GitHub Actions Workflow Success"
+          to: sujalpatel1014@gmail.com
+          from: sujalpatel1014@gmail.com
+          body: |
+             Your workflow completed successfully!
+
+             Repository: ${{ github.repository }}
+             Branch: ${{ github.ref_name }}
+             Commit: ${{ github.sha }}
+
+             Status: SUCCESS
+
