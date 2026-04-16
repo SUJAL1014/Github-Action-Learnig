@@ -1,4 +1,4 @@
-name: ESR-TO-ECS
+name: ECR-TO-ECS
 
 on:
   workflow_dispatch:
