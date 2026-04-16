@@ -1,0 +1,23 @@
+name: Delete s3 - OIDC
+
+on:
+  workflow_dispatch: 
+
+permissions: 
+  id-token: write
+  contents: read
+
+jobs:
+  delete-s3:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: configure credentails
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::607081650648:role/OidcsRoleForS3
+          aws-region: ap-south-1
+
+      - name: Delete s3
+        run: |
+           aws s3 rb s3://my-oidc-demo-bucket-12345 
