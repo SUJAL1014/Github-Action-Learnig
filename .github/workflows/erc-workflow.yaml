@@ -1,0 +1,43 @@
+name: Push Image to ECR
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: chechout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::607081650648:role/OidcsRoleForS3
+          aws-region: ap-south-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Create the private repository if it doesn't exist
+        run: |
+          aws ecr describe-repositories --repository-names demo-ecr \
+          || aws ecr create-repository --repository-name demo-ecr
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: demo-ecr
+          IMAGE_TAG: latest
+        run: |
+          # Build and Push Docker image
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+
+
+  
